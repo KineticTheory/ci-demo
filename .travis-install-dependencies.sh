@@ -62,8 +62,8 @@ if [[ ${STYLE} ]]; then
   run "sudo apt-get install -y clang-format-${CLANG_FORMAT_VER}"
   run "cd ${VENDOR_DIR}/bin"
   if [[ -x /usr/bin/clang-format-${CLANG_FORMAT_VER} ]]; then
-    run "ln -s /usr/bin/clang-format-${CLANG_FORMAT_VER} clang-format"
-    run "ln -s /usr/bin/git-clang-format-${CLANG_FORMAT_VER} git-clang-format"
+    run "sudo ln -s /usr/bin/clang-format-${CLANG_FORMAT_VER} clang-format"
+    run "sudo ln -s /usr/bin/git-clang-format-${CLANG_FORMAT_VER} git-clang-format"
   else
     die "Didn't find /usr/bin/clang-format-${CLANG_FORMAT_VER}"
   fi
