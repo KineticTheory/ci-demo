@@ -8,6 +8,7 @@ environment:
   OMP_NUM_THREADS: 4
 
 build_script:
+  - dir /s "c:\Windows\System32\*mswsock*"
   - mkdir build
   - cd build
   - cmake -G "Visual Studio 15 2017" ..

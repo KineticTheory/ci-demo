@@ -114,7 +114,7 @@ endif()
 # Extra runtime libraries...
 #
 
-find_library( Lib_win_winsock NAMES ws2_32;wsock32;winsock32 )
+find_library( Lib_win_winsock NAMES mswsock32;ws2_32;wsock32;winsock32 )
 if( EXISTS "${Lib_win_winsock}" AND CMAKE_CL_64 )
   string(REPLACE "um/x86" "um/x64" Lib_win64_winsock "${Lib_win_winsock}" )
   if( EXISTS "${Lib_win64_winsock}" )

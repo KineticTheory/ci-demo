@@ -16,10 +16,10 @@ env:
     - CTEST=$HOME/cmake-3.9.0-Linux-x86_64/bin/ctest
     - CXX=g++-6
     - FC=gfortran-6
- #   - LAPACK_LIB_DIR=/usr/lib
- #   - OMP_NUM_THREADS=4
- #   - RANDOM123_INC_DIR=$HOME/Random123-1.09/include
- #   - VENDOR_DIR=${HOME}
+#   - LAPACK_LIB_DIR=/usr/lib
+#   - OMP_NUM_THREADS=4
+#   - RANDOM123_INC_DIR=$HOME/Random123-1.09/include
+#   - VENDOR_DIR=${HOME}
     - topdir=/home/travis/build/KineticTheory/ci-demo
     - COVERAGE=ON
   matrix:
