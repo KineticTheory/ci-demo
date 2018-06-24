@@ -8,9 +8,6 @@ environment:
   OMP_NUM_THREADS: 4
 
 build_script:
-  - set
-  - dir c:\Windows\System32
-  - dir /s "c:\Program Files (x86)\Windows Kits\10\Lib\*"
   - mkdir build
   - cd build
   - cmake -G "Visual Studio 15 2017" ..

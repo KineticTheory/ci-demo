@@ -43,7 +43,7 @@ if [[ ${STYLE} ]]; then
   # the 'develop' branch, the develop branch must be available locally.
   num_dev_branches_found=`find_dev_branch`
   if [[ $num_dev_branches_found == 0 ]]; then
-    run "no develop branches found."
+    echo "no develop branches found."
     # Register the develop branch in draco/.git/config
     run "git config --local remote.origin.fetch +refs/heads/develop:refs/remotes/origin/develop"
     # Download the meta-data for the 'develop' branch
