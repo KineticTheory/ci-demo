@@ -1,6 +1,20 @@
+os: Visual Studio 2017
+
 version: 1.0.{build}
 skip_tags: true
 max_jobs: 1
 clone_depth: 3
-build:
-  verbosity: minimal
+
+environment:
+  OMP_NUM_THREADS: 4
+
+build_script:
+  - set
+  - mkdir build
+  - cd build
+  - cmake -G "Visual Studio 15 2017" ..
+  - cmake --build . --config Debug
+  - ctest
+
+#build:
+#  verbosity: minimal

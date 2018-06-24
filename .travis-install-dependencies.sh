@@ -21,7 +21,8 @@ topdir=`pwd` # /home/travis/build/lanl/Draco
 RANDOM123_VER=1.09
 CMAKE_VERSION=3.9.0-Linux-x86_64
 NUMDIFF_VER=5.8.1
-CLANG_FORMAT_VER=3.9
+CLANG_FORMAT_VER=6.0
+DISTRO=trusty
 OPENMPI_VER=1.10.5
 
 # Return integer > 0 if 'develop' branch is found.
@@ -41,27 +42,31 @@ if [[ ${STYLE} ]]; then
   # travis checkout. Since we only test files that are modified when comapred to
   # the 'develop' branch, the develop branch must be available locally.
   num_dev_branches_found=`find_dev_branch`
-  echo "num_dev_branches_found = ${num_dev_branches_found}"
   if [[ $num_dev_branches_found == 0 ]]; then
-    echo "no develop branches found."
+    run "no develop branches found."
     # Register the develop branch in draco/.git/config
-    echo "git config --local remote.origin.fetch +refs/heads/develop:refs/remotes/origin/develop"
+    run "git config --local remote.origin.fetch +refs/heads/develop:refs/remotes/origin/develop"
     # Download the meta-data for the 'develop' branch
-    echo "git fetch"
+    run "git fetch"
     # Create a local tracking branch
-    echo "git branch -t develop origin/develop"
+    run "git branch -t develop origin/develop"
   fi
 
   # clang-format and git-clang-format
+  # https://blog.kowalczyk.info/article/k/how-to-install-latest-clang-6.0-on-ubuntu-16.04-xenial-wsl.html
   echo " "
   echo "Clang-format"
-  run "sudo add-apt-repository 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-${CLANG_FORMAT_VER} main'"
-  run "wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -"
-  run "sudo apt-get update -qq"
-  run "sudo apt-get install -qq -y clang-format-${CLANG_FORMAT_VER}"
+  run "wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -"
+  run "sudo add-apt-repository 'deb http://apt.llvm.org/${DISTRO}/ llvm-toolchain-${DISTRO}-${CLANG_FORMAT_VER} main'"
+  run "sudo apt-get update"
+  run "sudo apt-get install -y clang-format-${CLANG_FORMAT_VER}"
   run "cd ${VENDOR_DIR}/bin"
-  run "ln -s /usr/bin/clang-format-${CLANG_FORMAT_VER} clang-format"
-  run "ln -s /usr/bin/git-clang-format-${CLANG_FORMAT_VER} git-clang-format"
+  if [[ -x /usr/bin/clang-format-${CLANG_FORMAT_VER} ]]; then
+    run "ln -s /usr/bin/clang-format-${CLANG_FORMAT_VER} clang-format"
+    run "ln -s /usr/bin/git-clang-format-${CLANG_FORMAT_VER} git-clang-format"
+  else
+    die "Didn't find /usr/bin/clang-format-${CLANG_FORMAT_VER}"
+  fi
   run "cd $topdir"
 
 # else
