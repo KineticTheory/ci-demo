@@ -17,14 +17,21 @@ env:
     - CXX=g++-6
     - FC=gfortran-6
 #   - LAPACK_LIB_DIR=/usr/lib
-#   - OMP_NUM_THREADS=4
-#   - RANDOM123_INC_DIR=$HOME/Random123-1.09/include
-#   - VENDOR_DIR=${HOME}
+    - OMP_NUM_THREADS=4
+    - RANDOM123_INC_DIR=$HOME/Random123-1.09/include
+    - VENDOR_DIR=${HOME}
     - topdir=/home/travis/build/KineticTheory/ci-demo
     - COVERAGE=ON
+    - RANDOM123_VER=1.09
+    - CMAKE_VERSION=3.9.0-Linux-x86_64
+    - NUMDIFF_VER=5.8.1
+    - CLANG_FORMAT_VER=6.0
+    - DISTRO=trusty
+    - OPENMPI_VER=1.10.5
+    - GCCVER=6
   matrix:
     - STYLE=ON
-#    - WERROR=ON
+    - WERROR=ON
 
 addons:
   apt:
@@ -49,7 +56,7 @@ install:
 before_script:
   - if [[ ${WERROR} ]]; then for i in CC CXX FC; do eval export ${i}_FLAGS=\"-Werror\"; done; fi
   - if [[ ${COVERAGE} ]]; then for i in CC CXX FC; do eval export ${i}_FLAGS+=\" --coverage\"; done; fi
-#  - if [[ ${WERROR} ]]; then for i in CC CXX FC; do eval export ${i}=\"${!i} -Werror\"; done; fi
+  - if [[ ${WERROR} ]]; then for i in CC CXX FC; do eval export ${i}=\"${!i} -Werror\"; done; fi
 
 script:
   - ./.travis-run-tests.sh
