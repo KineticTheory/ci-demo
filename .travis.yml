@@ -24,7 +24,7 @@ env:
     - COVERAGE=ON
   matrix:
     - STYLE=ON
-    - WERROR=ON
+#    - WERROR=ON
 
 addons:
   apt:

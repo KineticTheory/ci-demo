@@ -41,14 +41,15 @@ if [[ ${STYLE} ]]; then
   # travis checkout. Since we only test files that are modified when comapred to
   # the 'develop' branch, the develop branch must be available locally.
   num_dev_branches_found=`find_dev_branch`
+  echo "num_dev_branches_found = ${num_dev_branches_found}"
   if [[ $num_dev_branches_found == 0 ]]; then
     echo "no develop branches found."
     # Register the develop branch in draco/.git/config
-    run "git config --local remote.origin.fetch +refs/heads/develop:refs/remotes/origin/develop"
+    echo "git config --local remote.origin.fetch +refs/heads/develop:refs/remotes/origin/develop"
     # Download the meta-data for the 'develop' branch
-    run "git fetch"
+    echo "git fetch"
     # Create a local tracking branch
-    run "git branch -t develop origin/develop"
+    echo "git branch -t develop origin/develop"
   fi
 
   # clang-format and git-clang-format
@@ -63,48 +64,48 @@ if [[ ${STYLE} ]]; then
   run "ln -s /usr/bin/git-clang-format-${CLANG_FORMAT_VER} git-clang-format"
   run "cd $topdir"
 
-else
+# else
 
-  # Random123
-  echo " "
-  echo "Random123"
-  cd $HOME
-  run "wget http://www.deshawresearch.com/downloads/download_random123.cgi/Random123-${RANDOM123_VER}.tar.gz"
-  run "tar -xvf Random123-${RANDOM123_VER}.tar.gz &> build-r123.log"
-  echo "Please set RANDOM123_INC_DIR=$HOME/Random123-${RANDOM123_VER}/include"
-  run "ls $HOME/Random123-${RANDOM123_VER}/include"
+  # # Random123
+  # echo " "
+  # echo "Random123"
+  # cd $HOME
+  # run "wget http://www.deshawresearch.com/downloads/download_random123.cgi/Random123-${RANDOM123_VER}.tar.gz"
+  # run "tar -xvf Random123-${RANDOM123_VER}.tar.gz &> build-r123.log"
+  # echo "Please set RANDOM123_INC_DIR=$HOME/Random123-${RANDOM123_VER}/include"
+  # run "ls $HOME/Random123-${RANDOM123_VER}/include"
 
-  # CMake
-  echo " "
-  echo "CMake"
-  run "cd $HOME"
-  run "wget --no-check-certificate http://www.cmake.org/files/v${CMAKE_VERSION:0:3}/cmake-${CMAKE_VERSION}.tar.gz"
-  run "tar -xzf cmake-${CMAKE_VERSION}.tar.gz &> build-cmake.log"
-  run "cd $topdir"
+  # # CMake
+  # echo " "
+  # echo "CMake"
+  # run "cd $HOME"
+  # run "wget --no-check-certificate http://www.cmake.org/files/v${CMAKE_VERSION:0:3}/cmake-${CMAKE_VERSION}.tar.gz"
+  # run "tar -xzf cmake-${CMAKE_VERSION}.tar.gz &> build-cmake.log"
+  # run "cd $topdir"
 
-  # Numdiff
-  echo " "
-  echo "Numdiff"
-  run "wget http://mirror.lihnidos.org/GNU/savannah/numdiff/numdiff-${NUMDIFF_VER}.tar.gz"
-  run "tar -xvf numdiff-${NUMDIFF_VER}.tar.gz >& build-numdiff.log"
-  run "cd numdiff-${NUMDIFF_VER}"
-  run "./configure --prefix=/usr && make >> build-numdiff.log 2>&1"
-  run "sudo make install"
-  run "cd $topdir"
+  # # Numdiff
+  # echo " "
+  # echo "Numdiff"
+  # run "wget http://mirror.lihnidos.org/GNU/savannah/numdiff/numdiff-${NUMDIFF_VER}.tar.gz"
+  # run "tar -xvf numdiff-${NUMDIFF_VER}.tar.gz >& build-numdiff.log"
+  # run "cd numdiff-${NUMDIFF_VER}"
+  # run "./configure --prefix=/usr && make >> build-numdiff.log 2>&1"
+  # run "sudo make install"
+  # run "cd $topdir"
 
-  # OpenMPI
-  echo " "
-  echo "OpenMPI"
-  run "wget --no-check-certificate https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VER}.tar.gz"
-  run "tar -zxf openmpi-${OPENMPI_VER}.tar.gz > build-openmpi.log"
-  run "cd openmpi-${OPENMPI_VER}"
-  run "./configure --enable-mpi-thread-multiple --quiet >> build-openmpi.log 2>&1"
-  # run "travis_wait 20 make"
-  run "make >> build-openmpi.log 2>&1"
-  run "sudo make install"
-  run "sudo sh -c 'echo \"/usr/local/lib\n/usr/local/lib/openmpi\" > /etc/ld.so.conf.d/openmpi.conf'"
-  run "sudo ldconfig"
-  run "cd $topdir"
+  # # OpenMPI
+  # echo " "
+  # echo "OpenMPI"
+  # run "wget --no-check-certificate https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-${OPENMPI_VER}.tar.gz"
+  # run "tar -zxf openmpi-${OPENMPI_VER}.tar.gz > build-openmpi.log"
+  # run "cd openmpi-${OPENMPI_VER}"
+  # run "./configure --enable-mpi-thread-multiple --quiet >> build-openmpi.log 2>&1"
+  # # run "travis_wait 20 make"
+  # run "make >> build-openmpi.log 2>&1"
+  # run "sudo make install"
+  # run "sudo sh -c 'echo \"/usr/local/lib\n/usr/local/lib/openmpi\" > /etc/ld.so.conf.d/openmpi.conf'"
+  # run "sudo ldconfig"
+  # run "cd $topdir"
 
 fi
 

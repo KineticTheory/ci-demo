@@ -3,7 +3,8 @@ ci-demo
 
 * A subset of [lanl/Draco](https://github.com/lanl/Draco) used for testing CI hooks like Travis, codecov and AppVeyor.
 
-[![Build Status](https://travis-ci.org/KineticTheory/ci-demo.svg?branch=develop)](https://travis-ci.org/KineticTheory/ci-demo)
+[![Linux Build Status](https://travis-ci.org/KineticTheory/ci-demo.svg?branch=develop)](https://travis-ci.org/KineticTheory/ci-demo)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/rjl1x17d9r1346f2/branch/develop?svg=true)](https://ci.appveyor.com/project/KineticTheory/ci-demo)
 [![codecov.io](https://codecov.io/github/KineticTheory/ci-demo/coverage.svg?branch=develop)](https://codecov.io/github/KineticTheory/ci-demo/branch/develop)
 [![Latest Version](https://img.shields.io/github/release/KineticTheory/ci-demo.svg?style=flat-square)](https://github.com/KineticTheory/ci-demo/releases)
 [![PyPI](https://img.shields.io/pypi/l/Django.svg)](https://github.com/KineticTheory/ci-demo/blob/develop/LICENSE.md)

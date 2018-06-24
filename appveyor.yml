@@ -1,0 +1,6 @@
+version: 1.0.{build}
+skip_tags: true
+max_jobs: 1
+clone_depth: 3
+build:
+  verbosity: minimal
