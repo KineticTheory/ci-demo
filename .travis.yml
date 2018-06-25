@@ -56,7 +56,6 @@ install:
 before_script:
   - if [[ ${WERROR} ]]; then for i in CC CXX FC; do eval export ${i}_FLAGS=\"-Werror\"; done; fi
   - if [[ ${COVERAGE} ]]; then for i in CC CXX FC; do eval export ${i}_FLAGS+=\" --coverage\"; done; fi
-  - if [[ ${WERROR} ]]; then for i in CC CXX FC; do eval export ${i}=\"${!i} -Werror\"; done; fi
 
 script:
   - ./.travis-run-tests.sh

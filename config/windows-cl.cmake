@@ -114,11 +114,7 @@ endif()
 # Extra runtime libraries...
 #
 
-message("
-CMAKE_PREFIX_PATH    = ${CMAKE_PREFIX_PATH}
-CMAKE_LIBRARY_PATH   = ${CMAKE_LIBRARY_PATH}
-CMAKE_FRAMEWPRK_PATH = ${CMAKE_FRAMEWORK_PATH}
-")
+# Locate a Windows sockets library (required!)
 foreach( lib ws2_32;wsock32;winsock32;mswsock32 )
   if( NOT Lib_win_winsock )
     find_library( winsock_lib_${lib} ${lib} )

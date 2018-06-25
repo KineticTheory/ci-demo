@@ -35,8 +35,10 @@ else
   # configure
   # -Wl,--no-as-needed is a workaround for bugs.debian.org/457284 .
   echo " "
-  echo "${CMAKE} -DCMAKE_EXE_LINKER_FLAGS=\"-Wl,--no-as-needed\" -DDRACO_C4=SCALAR .."
-  ${CMAKE} -DCMAKE_EXE_LINKER_FLAGS="-Wl,--no-as-needed" -DDRACO_C4=SCALAR ..
+  echo "${CMAKE} -DDRACO_C4=SCALAR .."
+  ${CMAKE} -DDRACO_C4=SCALAR ..
+#  echo "${CMAKE} -DCMAKE_EXE_LINKER_FLAGS=\"-Wl,--no-as-needed\" -DDRACO_C4=SCALAR .."
+#  ${CMAKE} -DCMAKE_EXE_LINKER_FLAGS="-Wl,--no-as-needed" -DDRACO_C4=SCALAR ..
   error_code=$?
   # if configure was successful, the start the build, otherwise abort.
   if [[ $error_code -eq 0 ]]; then
