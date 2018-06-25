@@ -409,7 +409,8 @@ macro( setupGSL )
       endif()
     endif()
 
-    find_package( GSL QUIET REQUIRED )
+    # find_package( GSL QUIET REQUIRED )
+    find_package( GSL QUIET )
     if( GSL_FOUND )
       message( STATUS "Looking for GSL.......found ${GSL_LIBRARY}" )
       mark_as_advanced( GSL_CONFIG_EXECUTABLE )
@@ -423,7 +424,8 @@ macro( setupGSL )
       URL "https://www.gnu.org/software/gsl"
       DESCRIPTION "The GNU Scientific Library (GSL) is a numerical library for C and C++
    programmers."
-      TYPE REQUIRED
+#      TYPE REQUIRED
+      TYPE OPTIONAL
       PURPOSE "Required for rng and quadrature components." )
 
   endif()
