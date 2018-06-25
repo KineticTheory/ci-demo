@@ -22,7 +22,8 @@ build_script:
 # we start at c:\projects\ci-demo
 #
 # vendors
-  - curl -fsS -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/untagged-6376559aac3a9cd0f42f/win32-vendors.zip
+  - curl -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/files/2131538/win32-vendors.zip
+  - dir
   - 7z.exe -y x win32-vendors.zip
   - mkdir build
   - cd build

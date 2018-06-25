@@ -35,6 +35,11 @@ else
   # configure
   # -Wl,--no-as-needed is a workaround for bugs.debian.org/457284 .
   echo " "
+  if [[ -f CMakeCache.txt ]]; then
+    echo "===== CMakeCache.txt ====="
+    cat CMakeCache.txt
+  fi
+  echo "========"
   echo "${CMAKE} -DDRACO_C4=SCALAR .."
   ${CMAKE} -DDRACO_C4=SCALAR ..
 #  echo "${CMAKE} -DCMAKE_EXE_LINKER_FLAGS=\"-Wl,--no-as-needed\" -DDRACO_C4=SCALAR .."
