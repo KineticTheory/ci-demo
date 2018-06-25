@@ -114,13 +114,34 @@ endif()
 # Extra runtime libraries...
 #
 
-find_library( Lib_win_winsock NAMES mswsock32;ws2_32;wsock32;winsock32 )
-if( EXISTS "${Lib_win_winsock}" AND CMAKE_CL_64 )
-  string(REPLACE "um/x86" "um/x64" Lib_win64_winsock "${Lib_win_winsock}" )
-  if( EXISTS "${Lib_win64_winsock}" )
-    set( Lib_win_winsock "${Lib_win64_winsock}")
+message("
+CMAKE_PREFIX_PATH    = ${CMAKE_PREFIX_PATH}
+CMAKE_LIBRARY_PATH   = ${CMAKE_LIBRARY_PATH}
+CMAKE_FRAMEWPRK_PATH = ${CMAKE_FRAMEWORK_PATH}
+")
+foreach( lib mswsock32;ws2_32;wsock32;winsock32 )
+  message("Looking for lib = ${lib}")
+  find_library( winsock_lib_${lib}
+    NAMES ${lib}
+    )
+  message("winsock_lib_${lib} = ${winsock_lib_${lib}")
+    find_library( winsock_lib_${lib}
+    NAMES ${lib}
+    HINTS "c:\Windows\System32";"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17134.0\um\x86"
+    )
+  message("winsock_lib_${lib} = ${winsock_lib_${lib}")
+  if( winsock_lib_${lib} )
+    list( APPEND Lib_win_winsock "${winsock_lib_${lib}")
   endif()
-endif()
+endforeach()
+
+# find_library( Lib_win_winsock NAMES mswsock32;ws2_32;wsock32;winsock32 )
+# if( EXISTS "${Lib_win_winsock}" AND CMAKE_CL_64 )
+#   string(REPLACE "um/x86" "um/x64" Lib_win64_winsock "${Lib_win_winsock}" )
+#   if( EXISTS "${Lib_win64_winsock}" )
+#     set( Lib_win_winsock "${Lib_win64_winsock}")
+#   endif()
+# endif()
 
 if( ${Lib_win_winsock} MATCHES "NOTFOUND" )
   message( FATAL_ERROR "Could not find library winsock32 or ws2_32!" )

@@ -14,7 +14,7 @@ build_script:
   - dir /s "C:\Program Files (x86)\Windows Kits\10\Lib\*ws2_32*"
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 15 2017" ..
+  - cmake -G "Visual Studio 15 2017" -DDRACO_C4=SCALAR ..
   - cmake --build . --config Debug
   - ctest
 
