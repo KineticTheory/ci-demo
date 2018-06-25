@@ -122,16 +122,16 @@ CMAKE_FRAMEWPRK_PATH = ${CMAKE_FRAMEWORK_PATH}
 foreach( lib mswsock32;ws2_32;wsock32;winsock32 )
   message("Looking for lib = ${lib}")
   find_library( winsock_lib_${lib}
-    NAMES ${lib}
-    )
-  message("winsock_lib_${lib} = ${winsock_lib_${lib}")
+    NAMES ${lib} )
+  message("winsock_lib_${lib} = ${winsock_lib_${lib}}")
     find_library( winsock_lib_${lib}
     NAMES ${lib}
-    HINTS "c:\Windows\System32";"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17134.0\um\x86"
+    HINTS "c:\Windows\System32"
+          "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17134.0\um\x86"
     )
-  message("winsock_lib_${lib} = ${winsock_lib_${lib}")
+  message("winsock_lib_${lib} = ${winsock_lib_${lib}}")
   if( winsock_lib_${lib} )
-    list( APPEND Lib_win_winsock "${winsock_lib_${lib}")
+    list( APPEND Lib_win_winsock "${winsock_lib_${lib}}")
   endif()
 endforeach()
 
