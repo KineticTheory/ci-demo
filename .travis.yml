@@ -42,6 +42,9 @@ addons:
       - gcc-7
       - g++-7
       - gfortran-7
+      - environment-modules
+      - graphviz
+      - doxygen
 
 before_install:
   - mkdir -p ${VENDOR_DIR}/bin & export PATH=${VENDOR_DIR}/bin:$PATH
@@ -52,8 +55,8 @@ install:
   - travis_wait 30 ./.travis-install-dependencies.sh
 
 before_script:
-  - if [[ ${WERROR} ]]; then for i in CC CXX FC; do eval export ${i}_FLAGS=\"-Werror\"; done; fi
-  - if [[ ${COVERAGE} ]]; then for i in CC CXX FC; do eval export ${i}_FLAGS+=\" --coverage\"; done; fi
+  - if [[ ${WERROR} ]]; then for i in CC CXX Fortran; do eval export ${i}_FLAGS=\"-Werror\"; done; fi
+  - if [[ ${COVERAGE} ]]; then for i in CC CXX Fortran; do eval export ${i}_FLAGS+=\" --coverage\"; done; fi
 
 script:
   - printenv
