@@ -103,7 +103,9 @@ if( NOT CXX_FLAGS_INITIALIZED )
     #             accesses and some conversions between pointers to base and
     #             derived classes, detect if the referenced object does not have
     #             the correct dynamic type.
-    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-divide-by-zero")
+    if( NOT DEFINED ENV{TRAVIS} )
+      string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-divide-by-zero")
+    endif()
     string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-cast-overflow")
     string( APPEND CMAKE_C_FLAGS_DEBUG " -fdiagnostics-color=auto")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=vptr")

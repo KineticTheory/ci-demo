@@ -15,13 +15,12 @@ build_script:
 # we start at c:\projects\ci-demo
 # vendors
   - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/files/2131538/win32-vendors.zip
-  - dir c:\projects\ci-demo
   - 7z.exe -y x win32-vendors.zip
   - mkdir build
   - cd build
   - cmake -G "Visual Studio 15 2017" -DDRACO_C4=SCALAR c:\projects\ci-demo
   - cmake --build . --config Debug
-  - ctest
+  - ctest -C Debug -j 2
 
 #build:
 #  verbosity: minimal
