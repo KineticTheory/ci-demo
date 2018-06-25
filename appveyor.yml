@@ -6,18 +6,20 @@ clone_depth: 3
 
 environment:
   OMP_NUM_THREADS: 4
-  RANDOM123_INC_DIR=c:\projects\ci-demo\vendors\Random123-1.08\include
-  GSL_ROOT_DIR=c:\projects\ci-demo\vendors\gsl-1.16
-  VENDOR_DIR=c:\projects\ci-demo\vendors
-  PATH=c:\projects\ci-demo\vendors\bin;$(PATH)
+  RANDOM123_INC_DIR: c:\projects\ci-demo\vendors\Random123-1.08\include
+  GSL_ROOT_DIR: c:\projects\ci-demo\vendors\gsl-1.16
+  VENDOR_DIR: c:\projects\ci-demo\vendors
+  PATH: c:\projects\ci-demo\vendors\bin;$(PATH)
 
 build_script:
+  - where dotnet
+  - where nuget
 #  - dir /s "c:\Windows\System32\*wsock*"
 #  - dir /s "C:\Program Files (x86)\Windows Kits\10\Lib\*wsock*"
 #  - dir /s "c:\Windows\System32\*ws2_32*"
 #  - dir /s "C:\Program Files (x86)\Windows Kits\10\Lib\*ws2_32*"
 #
-# we start at c:/projects/ci-demo
+# we start at c:\projects\ci-demo
 #
 # vendors
   - curl -fsS -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/untagged-6376559aac3a9cd0f42f/win32-vendors.zip
