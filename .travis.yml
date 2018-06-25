@@ -10,12 +10,12 @@ dist: trusty
 env:
   global:
 #    - BLAS_blas_LIBRARY=/usr/lib/libblas.a
-    - CC=gcc-6
+    - CC=gcc-7
     - CCACHE_CPP2=yes
     - CMAKE=$HOME/cmake-3.9.0-Linux-x86_64/bin/cmake
     - CTEST=$HOME/cmake-3.9.0-Linux-x86_64/bin/ctest
-    - CXX=g++-6
-    - FC=gfortran-6
+    - CXX=g++-7
+    - FC=gfortran-7
 #   - LAPACK_LIB_DIR=/usr/lib
     - OMP_NUM_THREADS=4
     - RANDOM123_INC_DIR=$HOME/Random123-1.09/include
@@ -28,7 +28,7 @@ env:
     - CLANG_FORMAT_VER=6.0
     - DISTRO=trusty
     - OPENMPI_VER=1.10.5
-    - GCCVER=6
+    - GCCVER=7
   matrix:
     - STYLE=ON
     - WERROR=ON
@@ -40,9 +40,9 @@ addons:
     packages:
       - ccache
 #      - libgsl0-dev
-      - gcc-6
-      - g++-6
-      - gfortran-6
+      - gcc-7
+      - g++-7
+      - gfortran-7
 #      - liblapack-dev
 
 before_install:
@@ -62,13 +62,13 @@ script:
   - ./.travis-run-tests.sh
 
 after_success:
-  - if [[ ${COVERAGE} ]]; then codecov --gcov-exec gcov-6; fi
+  - if [[ ${COVERAGE} ]]; then codecov --gcov-exec gcov-7; fi
 
 cache:
   - ccache
 
 compiler:
-  - gcc-6
+  - gcc-7
 
 git:
   depth: 3
