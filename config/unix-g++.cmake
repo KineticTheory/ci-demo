@@ -162,7 +162,7 @@ if( NOT CXX_FLAGS_INITIALIZED )
   set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}" )
 
   # Extra Debug flags that only exist in newer gcc versions.
-  if( NOT DEFINED ENV{TRAVIS} )
+#  if( NOT DEFINED ENV{TRAVIS} )
 
     if( HAS_WNOEXCEPT )
       string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wnoexcept" )
@@ -174,7 +174,7 @@ if( NOT CXX_FLAGS_INITIALIZED )
       string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wunused-local-typedefs" )
     endif()
 
-  endif()
+#  endif()
 
 endif()
 
