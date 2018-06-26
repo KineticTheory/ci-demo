@@ -6,19 +6,29 @@ clone_depth: 3
 
 environment:
   OMP_NUM_THREADS: 4
+  RANDOM123_INC_DIR: c:\projects\ci-demo\vendors\Random123-1.08\include
+  GSL_ROOT_DIR: c:\projects\ci-demo\vendors\gsl-1.16
+  VENDOR_DIR: c:\projects\ci-demo\vendors
+  PATH: c:\projects\ci-demo\vendors\bin;$(PATH)
 
 build_script:
-  - set
-  - dir c:\Windows\System32
-  - dir /s "c:\Program Files (x86)\Windows Kits\10\Lib\*"
+# we start at c:\projects\ci-demo
+# vendors
+  - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/files/2131538/win32-vendors.zip
+  - 7z.exe -y x win32-vendors.zip
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 15 2017" ..
+  - cmake -G "Visual Studio 15 2017" -DDRACO_C4=SCALAR c:\projects\ci-demo
   - cmake --build . --config Debug
-  - ctest
+  - ctest -C Debug -j 2
 
 #build:
 #  verbosity: minimal
+
+# Applications
+# C:\Program Files\dotnet\dotnet.exe
+# C:\Program Files (x86)\dotnet\dotnet.exe
+# C:\Tools\NuGet\nuget.exe
 
 # Environment
 
