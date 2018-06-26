@@ -106,8 +106,8 @@ if( NOT CXX_FLAGS_INITIALIZED )
     if( NOT DEFINED ENV{TRAVIS} )
       string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-divide-by-zero")
       string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-cast-overflow")
-      string( APPEND CMAKE_C_FLAGS_DEBUG " -fdiagnostics-color=auto")
     endif()
+    string( APPEND CMAKE_C_FLAGS_DEBUG " -fdiagnostics-color=auto")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=vptr")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=object-size")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=alignment")
@@ -130,9 +130,9 @@ if( NOT CXX_FLAGS_INITIALIZED )
     #            defined. On by default when -fsanitize=address.
     # -fsanitize=signed-integer-overflow
     # -Wduplicated-branches warns when an if-else has identical branches.
-    #if( NOT DEFINED ENV{TRAVIS} )
-    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=signed-integer-overflow")
-    #endif()
+    if( NOT DEFINED ENV{TRAVIS} )
+      string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=signed-integer-overflow")
+    endif()
   endif()
   if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.0 )
     # See https://gcc.gnu.org/gcc-8/changes.html
