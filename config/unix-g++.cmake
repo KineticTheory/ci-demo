@@ -105,9 +105,9 @@ if( NOT CXX_FLAGS_INITIALIZED )
     #             the correct dynamic type.
     if( NOT DEFINED ENV{TRAVIS} )
       string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-divide-by-zero")
+      string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-cast-overflow")
+      string( APPEND CMAKE_C_FLAGS_DEBUG " -fdiagnostics-color=auto")
     endif()
-    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-cast-overflow")
-    string( APPEND CMAKE_C_FLAGS_DEBUG " -fdiagnostics-color=auto")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=vptr")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=object-size")
 #    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=alignment")
@@ -130,7 +130,9 @@ if( NOT CXX_FLAGS_INITIALIZED )
     #            defined. On by default when -fsanitize=address.
     # -fsanitize=signed-integer-overflow
     # -Wduplicated-branches warns when an if-else has identical branches.
-    string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=signed-integer-overflow")
+    if( NOT DEFINED ENV{TRAVIS} )
+      string( APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=signed-integer-overflow")
+    endif()
   endif()
   if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.0 )
     # See https://gcc.gnu.org/gcc-8/changes.html
@@ -160,14 +162,18 @@ if( NOT CXX_FLAGS_INITIALIZED )
   set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}" )
 
   # Extra Debug flags that only exist in newer gcc versions.
-  if( HAS_WNOEXCEPT )
-    string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wnoexcept" )
-  endif()
-  if( HAS_WSUGGEST_ATTRIBUTE )
-    string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const" )
-  endif()
-  if( HAS_WUNUSED_LOCAL_TYPEDEFS )
-    string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wunused-local-typedefs" )
+  if( NOT DEFINED ENV{TRAVIS} )
+
+    if( HAS_WNOEXCEPT )
+      string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wnoexcept" )
+    endif()
+    if( HAS_WSUGGEST_ATTRIBUTE )
+      string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const" )
+    endif()
+    if( HAS_WUNUSED_LOCAL_TYPEDEFS )
+      string( APPEND CMAKE_CXX_FLAGS_DEBUG " -Wunused-local-typedefs" )
+    endif()
+
   endif()
 
 endif()
@@ -200,9 +206,9 @@ set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" CACHE
 #
 # Toggle compiler flags for optional features
 #
-toggle_compiler_flag( GCC_ENABLE_ALL_WARNINGS "-Weffc++" "CXX" "DEBUG")
-toggle_compiler_flag( GCC_ENABLE_GLIBCXX_DEBUG
-  "-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC" "CXX" "DEBUG" )
+#toggle_compiler_flag( GCC_ENABLE_ALL_WARNINGS "-Weffc++" "CXX" "DEBUG")
+#toggle_compiler_flag( GCC_ENABLE_GLIBCXX_DEBUG
+#  "-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC" "CXX" "DEBUG" )
 toggle_compiler_flag( OPENMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "" )
 
 # Issues with tstFMA[12].cc:
