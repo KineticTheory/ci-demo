@@ -19,19 +19,18 @@ build_script:
 # we start at $(APPVEYOR_BUILD_FOLDER) = c:\projects\draco-2th1a
 # can't put vendors in the source directory.
   - cd ..
-  - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vendors.zip
-  - 7z.exe -y x win32-vendors.zip
-#  - curl -L -o cmake.zip https://github.com/Kitware/CMake/releases/download/v3.16.2/cmake-3.16.2-win64-x64.zip
-#  - 7z.exe -y x cmake.zip
-#  - set PATH=c:\projects\cmake-3.14.5-win64-x64\bin;%PATH%
-  - mkdir build
-  - cd build
-  - set
+#  - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vendors.zip
+#  - 7z.exe -y x win32-vendors.zip
+#  - set
+  - curl -L -o msmpisetup.exe https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe
+  - msmpisetup.exe -unattend -verbose
 # numdiff via msys? example: https://github.com/Microsoft/vcpkg/blob/master/ports/ffmpeg/portfile.cmake
   - xcopy %APPVEYOR_BUILD_FOLDER%\tools\ports %VCPKGPDIR% /E
   - vcpkg --triplet x64-windows install gsl
   - vcpkg --triplet x64-windows install msmpi
   - vcpkg list
+  - mkdir build
+  - cd build
 # no MPI installed so force scalar builds.
   - cmake -G "Visual Studio 16 2019" -A x64 -DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%APPVEYOR_BUILD_FOLDER%/tools/vs2019-toolchain.cmake %APPVEYOR_BUILD_FOLDER%
   - cmake --build . --config Debug
