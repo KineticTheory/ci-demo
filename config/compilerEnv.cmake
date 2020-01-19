@@ -1,10 +1,10 @@
 #-----------------------------*-cmake-*----------------------------------------#
 # file   config/compilerEnv.cmake
 # brief  Default CMake build parameters
-# note   Copyright (C) 2016-2018 Los Alamos National Security, LLC.
-#        All rights reserved.
+# note   Copyright (C) 2019-2020 Triad National Security, LLC. All rights reserved.
 #------------------------------------------------------------------------------#
 
+include_guard(GLOBAL)
 include( FeatureSummary )
 
 if( NOT DEFINED PLATFORM_CHECK_OPENMP_DONE OR
@@ -17,17 +17,12 @@ endif()
 # ----------------------------------------
 # PAPI
 # ----------------------------------------
-if( EXISTS $ENV{PAPI_HOME} )
+if( DEFINED ENV{PAPI_HOME} )
   set( HAVE_PAPI 1 CACHE BOOL "Is PAPI available on this machine?" )
-  set( PAPI_INCLUDE $ENV{PAPI_INCLUDE} CACHE PATH "PAPI headers at this location" )
-  set( PAPI_LIBRARY $ENV{PAPI_LIBDIR}/libpapi.so CACHE FILEPATH "PAPI library." )
-endif()
-
-# PAPI 4.2 on CT uses a different setup.
-if( $ENV{PAPI_VERSION} MATCHES "[45].[0-9].[0-9]")
-  set( HAVE_PAPI 1 CACHE BOOL "Is PAPI available on this machine?" )
-  string( REGEX REPLACE ".*[ ][-]I(.*)$" "\\1" PAPI_INCLUDE $ENV{PAPI_INCLUDE_OPTS} )
-  string( REGEX REPLACE ".*[ ][-]L(.*)[ ].*" "\\1" PAPI_LIBDIR $ENV{PAPI_POST_LINK_OPTS} )
+  set( PAPI_INCLUDE $ENV{PAPI_INCLUDE} CACHE PATH 
+    "PAPI headers at this location" )
+  set( PAPI_LIBRARY $ENV{PAPI_LIBDIR}/libpapi.so CACHE FILEPATH 
+    "PAPI library." )
 endif()
 
 if( HAVE_PAPI )
@@ -105,16 +100,12 @@ macro(dbsSetupCompilers)
   # assigned to individual targets.
 
   #  See https://cmake.org/cmake/help/git-stage/policy/CMP0069.html
-  include(CheckIPOSupported)
-  check_ipo_supported(RESULT USE_IPO)
-
-  # 2017-09-15 KT - eliminate configure warning in Win32 nightly regressions:
-  #                 "CMake doesn't support IPO for current compiler"
-  # 2017-11-13 KT - This also breaks linking MinGW gfortran libraries into
-  #                 MSVC applications, so just disable it for all Win32 builds.
   if( WIN32 )
     set( USE_IPO OFF CACHE BOOL
       "Enable Interprocedureal Optimization for Release builds." FORCE )
+  else()
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT USE_IPO)
   endif()
 
 endmacro()
@@ -143,18 +134,6 @@ macro(dbsSetupCxx)
     set( my_cxx_compiler ${CMAKE_CXX_COMPILER} )
   endif()
 
-  # C11 support:
-  set( CMAKE_C_STANDARD 11 )
-
-  # C++14 support:
-  set( CMAKE_CXX_STANDARD 14 )
-  set( CXX_STANDARD_REQUIRED ON )
-
-  # Do not enable extensions (e.g.: --std=gnu++11)
-  # https://crascit.com/2015/03/28/enabling-cxx11-in-cmake/
-  set( CMAKE_CXX_EXTENSIONS OFF )
-  set( CMAKE_C_EXTENSIONS   OFF )
-
   # Setup compiler flags
   get_filename_component( my_cxx_compiler "${my_cxx_compiler}" NAME )
 
@@ -172,16 +151,16 @@ macro(dbsSetupCxx)
   endif()
 
   # setup flags based on COMPILER_ID...
-  if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI" OR 
+  if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI" OR
       "${CMAKE_C_COMPILER_ID}"   STREQUAL "PGI" )
     include( unix-pgi )
-  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel" OR 
+  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel" OR
           "${CMAKE_C_COMPILER_ID}"   STREQUAL "Intel")
     include( unix-intel )
-  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Cray" OR 
+  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Cray" OR
           "${CMAKE_C_COMPILER_ID}"   STREQUAL "Cray")
     include( unix-crayCC )
-  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR 
+  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR
           "${CMAKE_C_COMPILER_ID}"   STREQUAL "Clang")
     if( APPLE )
       include( apple-clang )
@@ -190,8 +169,8 @@ macro(dbsSetupCxx)
     endif()
   elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
           "${CMAKE_C_COMPILER_ID}"   STREQUAL "GNU")
-    include( unix-g++ )  
-  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR 
+    include( unix-g++ )
+  elseif( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR
           "${CMAKE_C_COMPILER_ID}"   STREQUAL "MSVC" )
     include( windows-cl )
   else()
@@ -204,7 +183,7 @@ macro(dbsSetupCxx)
       message( FATAL_ERROR
 "I think the C++ compiler is a Cray compiler wrapper, but I don't know what "
 "compiler is wrapped.  CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
-    elseif( "${my_cxx_compiler}" MATCHES "cl" )
+    elseif( "${my_cxx_compiler}" MATCHES "cl" AND WIN32)
       include( windows-cl )
     elseif( "${my_cxx_compiler}" MATCHES "icpc" )
       include( unix-intel )
@@ -241,6 +220,10 @@ macro(dbsSetupCxx)
   # macros via -D, using CMake's add_definitions command, is an acceptable
   # alternative.  Such definitions appear below.
 
+  if( NOT DEFINED CMAKE_REQUIRED_DEFINITIONS )
+     set( CMAKE_REQUIRED_DEFINITIONS "" )
+  endif()
+
   # Enable the definition of UINT64_C in stdint.h (required by Random123).
   add_definitions(-D__STDC_CONSTANT_MACROS)
   set( CMAKE_REQUIRED_DEFINITIONS
@@ -271,7 +254,7 @@ macro(dbsSetupCxx)
   #    - EXE_LINKER_FLAGS
   # 2. Provide these as arguments to cmake as -DC_FLAGS="whatever".
   #----------------------------------------------------------------------------#
-  foreach( lang C CXX Fortran EXE_LINKER )
+  foreach( lang C CXX Fortran EXE_LINKER SHARED_LINKER)
     if( DEFINED ENV{${lang}_FLAGS} )
       string( APPEND ${lang}_FLAGS " $ENV{${lang}_FLAGS}")
     endif()
@@ -331,6 +314,171 @@ macro(dbsSetupCxx)
 endmacro()
 
 #------------------------------------------------------------------------------#
+# Setup Static Analyzer (if any)
+#
+# Enable with:
+#   -DDRACO_STATIC_ANALYZER=[none|clang-tidy|iwyu|cppcheck|cpplint|iwyl]
+#
+# Default is 'none'
+#
+# Variables set by this macro
+# - DRACO_STATIC_ANALYZER
+# - CMAKE_CXX_CLANG_TIDY
+# - CMAKE_CXX_INCLUDE_WHAT_YOU_USE
+# - CMAKE_CXX_CPPCHECK
+# - CMAKE_CXX_CPPLINT
+# - CMAKE_CXX_LINK_WHAT_YOU_USE
+
+# Refs:
+# - https://blog.kitware.com/static-checks-with-cmake-cdash-iwyu-clang-tidy-lwyu-cpplint-and-cppcheck/
+# - https://github.com/KratosMultiphysics/Kratos/wiki/How-to-use-Clang-Tidy-to-automatically-correct-code
+#------------------------------------------------------------------------------#
+macro(dbsSetupStaticAnalyzers)
+
+  set( DRACO_STATIC_ANALYZER "none" CACHE STRING "Enable a static analysis tool" )
+  set_property( CACHE DRACO_STATIC_ANALYZER PROPERTY STRINGS
+    "none" "clang-tidy" "iwyu" "cppcheck" "cpplint" "iwyl" )
+
+  if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
+
+    # clang-tidy
+    # Ex: cmake -DDRACO_STATIC_ANALYZER=clang-tidy \
+             #  -DCLANG_TIDY_CHECKS="-checks=generate-*" ...
+    # https://clang.llvm.org/extra/clang-tidy/
+    if( "${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy" )
+      if( NOT CMAKE_CXX_CLANG_TIDY )
+        find_program( CMAKE_CXX_CLANG_TIDY clang-tidy )
+        get_filename_component(CT_BPATH ${CMAKE_CXX_CLANG_TIDY} DIRECTORY )
+        get_filename_component(CT_BPATH "${CT_BPATH}" DIRECTORY )
+        string(CONCAT CLANG_TIDY_IPATH ${CT_BPATH} "/include/c++/v1")
+        unset( CT_BPATH )
+      endif()
+      if( CMAKE_CXX_CLANG_TIDY )
+        if( NOT CLANG_TIDY_OPTIONS )
+          set( CLANG_TIDY_OPTIONS "-header-filter=.*[.]hh" )
+        endif()
+        set( CLANG_TIDY_OPTIONS "${CLANG_TIDY_OPTIONS}" CACHE STRING
+          "clang-tidy extra options (eg: -header-filter=.*[.]hh;-fix)" FORCE )
+
+        if( NOT CLANG_TIDY_CHECKS )
+          # -checks=mpi-*,bugprone-*,performance-*,modernize-*
+          # See full list: `clang-tidy -check=* -list-checks'
+          set( CLANG_TIDY_CHECKS "-checks=modernize-*" )
+        endif()
+        set( CLANG_TIDY_CHECKS "${CLANG_TIDY_CHECKS}" CACHE STRING
+          "clang-tidy check options (eg: -checks=bugprone-*,mpi-*)" FORCE )
+
+        set( CLANG_TIDY_IPATH "${CLANG_TIDY_IPATH}" CACHE STRING
+          "clang-tidy extra include directories" FORCE )
+        if( NOT "${CLANG_TIDY_CHECKS}" MATCHES "[-]checks[=]" )
+          message( FATAL_ERROR "Option CLANG_TIDY_CHECKS string must start"
+                   " with the string '-check='")
+        endif()
+        # re-create clang-tidy command
+        if( "${CMAKE_CXX_CLANG_TIDY}" MATCHES "[-]checks[=]" )
+          list( GET CMAKE_CXX_CLANG_TIDY 0 CMAKE_CXX_CLANG_TIDY )
+        endif()
+        set( CMAKE_CXX_CLANG_TIDY
+            "${CMAKE_CXX_CLANG_TIDY};${CLANG_TIDY_CHECKS};${CLANG_TIDY_OPTIONS}"
+            CACHE STRING "Run clang-tidy on each source file before compile."
+            FORCE)
+      else()
+        unset( CMAKE_CXX_CLANG_TIDY )
+        unset( CMAKE_CXX_CLANG_TIDY CACHE )
+      endif()
+      # Sanity check
+      if( NOT CLANG_TIDY_IPATH OR NOT CLANG_TIDY_CHECKS OR NOT CMAKE_CXX_CLANG_TIDY )
+        message(FATAL_ERROR "clang-tidy mode requested but some required"
+          " variables were not found:
+           - CLANG_TIDY_IPATH     = ${CLANG_TIDY_IPATH}
+           - CLANG_TIDY_CHECKS    = ${CLANG_TIDY_CHECKS}
+           - CMAKE_CXX_CLANG_TIDY = ${CMAKE_CXX_CLANG_TIDY}")
+      endif()
+    endif()
+
+    # include-what-you-use
+    # https://github.com/include-what-you-use/include-what-you-use/blob/master/README.md
+    if( ${DRACO_STATIC_ANALYZER} STREQUAL "iwyu" )
+      find_program( CMAKE_CXX_INCLUDE_WHAT_YOU_USE iwyu )
+      if( CMAKE_CXX_INCLUDE_WHAT_YOU_USE )
+        if( NOT "${CMAKE_CXX_INCLUDE_WHAT_YOU_USE}" MATCHES "Xiwyu" )
+          set( CMAKE_CXX_INCLUDE_WHAT_YOU_USE
+            "${CMAKE_CXX_INCLUDE_WHAT_YOU_USE};-Xiwyu;--transitive_includes_only"
+            CACHE STRING "Run iwyu on each source file before compile." FORCE)
+        endif()
+      else()
+        unset( CMAKE_CXX_INCLUDE_WHAT_YOU_USE )
+        unset( CMAKE_CXX_INCLUDE_WHAT_YOU_USE CACHE )
+      endif()
+    endif()
+  endif()
+
+  # cppcheck
+  # http://cppcheck.sourceforge.net/
+  # http://cppcheck.sourceforge.net/demo/
+  if( ${DRACO_STATIC_ANALYZER} STREQUAL "cppcheck" )
+    find_program( CMAKE_CXX_CPPCHECK cppcheck )
+    if( CMAKE_CXX_CPPCHECK )
+      if( NOT "${CMAKE_CXX_CPPCHECK}" MATCHES "-std=" )
+        set( CMAKE_CXX_CPPCHECK "${CMAKE_CXX_CPPCHECK};--std=c++14"
+          CACHE STRING "Run cppcheck on each source file before compile." FORCE)
+      endif()
+    else()
+      unset( CMAKE_CXX_CPPCHECK )
+      unset( CMAKE_CXX_CPPCHECK CACHE )
+    endif()
+  endif()
+
+  # cpplint
+  # https://github.com/cpplint/cpplint
+  if( ${DRACO_STATIC_ANALYZER} STREQUAL "cpplint" )
+    find_program( CMAKE_CXX_CPPLINT cpplint )
+    if( CMAKE_CXX_CPPLINT )
+      if( NOT "${CMAKE_CXX_CPPLINT}" MATCHES "linelength" )
+        set( CMAKE_CXX_CPPLINT "${CMAKE_CXX_CPPLINT};--linelength=81"
+          CACHE STRING "Run cpplint on each source file before compile." FORCE)
+      endif()
+    else()
+      unset( CMAKE_CXX_CPPLINT )
+      unset( CMAKE_CXX_CPPLINT CACHE )
+    endif()
+  endif()
+
+  # include-what-you-link
+  # https://blog.kitware.com/static-checks-with-cmake-cdash-iwyu-clang-tidy-lwyu-cpplint-and-cppcheck/'
+  if( ${DRACO_STATIC_ANALYZER} MATCHES "iwyl" AND UNIX )
+    option( CMAKE_LINK_WHAT_YOU_USE "Report if extra libraries are linked."
+      TRUE )
+  else()
+    option( CMAKE_LINK_WHAT_YOU_USE "Report if extra libraries are linked."
+      FALSE )
+  endif()
+
+  # Report
+
+  if( NOT ${DRACO_STATIC_ANALYZER} STREQUAL "none" )
+    message("\nStatic Analyzer Setup...\n")
+
+    if( NOT "${CMAKE_CXX_CLANG_TIDY}x" STREQUAL "x" )
+      message(STATUS "Enabling static analysis option: ${CMAKE_CXX_CLANG_TIDY}")
+    endif()
+    if( NOT "${CMAKE_CXX_INCLUDE_WHAT_YOU_USE}x" STREQUAL "x" )
+      message(STATUS "Enabling static analysis option: ${CMAKE_CXX_INCLUDE_WHAT_YOU_USE}")
+    endif()
+    if( NOT "${CMAKE_CXX_CPPCHECK}x" STREQUAL "x" )
+      message(STATUS "Enabling static analysis option: ${CMAKE_CXX_CPPCHECK}")
+    endif()
+    if( NOT "${CMAKE_CXX_CPPLINT}x" STREQUAL "x" )
+      message(STATUS "Enabling static analysis option: ${CMAKE_CXX_CPPLINT}")
+    endif()
+    if( CMAKE_LINK_WHAT_YOU_USE )
+      message(STATUS "Enabling static analysis option: CMAKE_LINK_WHAT_YOU_USE")
+    endif()
+  endif()
+
+endmacro()
+
+#------------------------------------------------------------------------------#
 # Setup Fortran Compiler
 #
 # Use:
@@ -372,9 +520,9 @@ macro(dbsSetupFortran)
       execute_process( COMMAND ${my_fc_compiler} --version
         OUTPUT_VARIABLE mpifc_version_output
         OUTPUT_STRIP_TRAILING_WHITESPACE )
-      if( ${mpifc_version_output} MATCHES ifort )
+      if( "${mpifc_version_output}" MATCHES "ifort" )
         set( my_fc_compiler ifort )
-      elseif( ${mpifc_version_output} MATCHES GNU )
+      elseif( "${mpifc_version_output}" MATCHES "GNU" )
         set( my_fc_compiler gfortran )
       endif()
     endif()
@@ -419,23 +567,26 @@ macro(dbsSetupFortran)
 
   else()
     # If CMake doesn't know about a Fortran compiler, $ENV{FC}, then
-    # also look for a compiler to use with
-    # CMakeAddFortranSubdirectory.
-    message( STATUS "Looking for CMakeAddFortranSubdirectory Fortran compiler...")
+    # also look for a compiler to use with CMakeAddFortranSubdirectory.
+    message( STATUS "Looking for CMakeAddFortranSubdirectory Fortran "
+      "compiler...")
+	set( CAFS_Fortran_COMPILER "NOTFOUND" )
 
     # Try to find a Fortran compiler (use MinGW gfortran for MSVC).
     find_program( CAFS_Fortran_COMPILER
       NAMES ${CAFS_Fortran_COMPILER} $ENV{CAFS_Fortran_COMPILER} gfortran
       PATHS
+        c:/msys64/mingw64/bin
         c:/MinGW/bin
-        c:/msys64/usr/bin
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MinGW;InstallLocation]/bin" )
+        c:/msys64/usr/bin )
 
     if( EXISTS ${CAFS_Fortran_COMPILER} )
       set( HAVE_Fortran ON )
-      message( STATUS "Looking for CMakeAddFortranSubdirectory Fortran compiler... found ${CAFS_Fortran_COMPILER}")
+      message( STATUS "Looking for CMakeAddFortranSubdirectory Fortran "
+        "compiler... found ${CAFS_Fortran_COMPILER}")
     else()
-      message( STATUS "Looking for CMakeAddFortranSubdirectory Fortran compiler... not found")
+      message( STATUS "Looking for CMakeAddFortranSubdirectory Fortran "
+        "compiler... not found")
     endif()
 
   endif()
@@ -495,19 +646,19 @@ macro( toggle_compiler_flag switch compiler_flag
   # generate names that are safe for CMake RegEx MATCHES commands
   string(REPLACE "+" "x" safe_compiler_flag ${compiler_flag})
 
-  # Loop over types of variables to check: CMAKE_C_FLAGS,
-  # CMAKE_CXX_FLAGS, etc.
+  # Loop over types of variables to check: CMAKE_C_FLAGS, CMAKE_CXX_FLAGS, etc.
   foreach( comp ${compiler_flag_var_names} )
 
     # sanity check
     if( NOT ${comp} STREQUAL "C" AND
         NOT ${comp} STREQUAL "CXX" AND
         NOT ${comp} STREQUAL "Fortran" AND
-        NOT ${comp} STREQUAL "EXE_LINKER")
-      message(FATAL_ERROR "When calling
-toggle_compiler_flag(switch, compiler_flag, compiler_flag_var_names),
-compiler_flag_var_names must be set to one or more of these valid
-names: C;CXX;EXE_LINKER.")
+        NOT ${comp} STREQUAL "EXE_LINKER" AND
+        NOT ${comp} STREQUAL "SHARED_LINKER")
+      message(FATAL_ERROR "When calling "
+"toggle_compiler_flag(switch, compiler_flag, compiler_flag_var_names), "
+"compiler_flag_var_names must be set to one or more of these valid "
+"names: C;CXX;EXE_LINKER.")
     endif()
 
     string( REPLACE "+" "x" safe_CMAKE_${comp}_FLAGS

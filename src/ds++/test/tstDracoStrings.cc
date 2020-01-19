@@ -1,12 +1,12 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /*!
  * \file   ds++/test/tstDracoStrings.cc
  * \author Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 23, 2017, 13:30 pm
  * \brief  Test functions defined in ds++/DracoStrings.hh
- * \note   Copyright (C) 2017-2018 Los Alamos National Security, LLC.
+ * \note   Copyright (C) 2017-2020 Triad National Security, LLC.
  *         All rights reserved. */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #include "ds++/DracoStrings.hh"
 #include "ds++/Release.hh"
@@ -16,9 +16,9 @@
 using namespace std;
 using namespace rtt_dsxx;
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 // TESTS
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 void test_trim(UnitTest &ut) {
 
@@ -41,7 +41,7 @@ void test_trim(UnitTest &ut) {
   return;
 }
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 void test_prune(UnitTest &ut) {
 
   cout << "\nBegin test_prune checks...\n";
@@ -62,7 +62,7 @@ void test_prune(UnitTest &ut) {
   return;
 }
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 void test_tokenize(UnitTest &ut) {
 
   cout << "\nBegin test_tokenize checks...\n";
@@ -86,7 +86,7 @@ void test_tokenize(UnitTest &ut) {
   return;
 }
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 void test_parse_number(UnitTest &ut) {
 
   cout << "\nBegin test_parse_number checks...\n";
@@ -102,6 +102,10 @@ void test_parse_number(UnitTest &ut) {
   FAIL_IF_NOT(parse_number<int>(case1) == 1);
   FAIL_IF_NOT(parse_number<long>(case1) == 1l);
   FAIL_IF_NOT(parse_number<unsigned long>(case1) == 1ul);
+  FAIL_IF_NOT(parse_number<int32_t>(case1) == 1);
+  FAIL_IF_NOT(parse_number<int64_t>(case1) == 1l);
+  FAIL_IF_NOT(parse_number<uint32_t>(case1) == 1u);
+  FAIL_IF_NOT(parse_number<uint64_t>(case1) == 1ul);
   FAIL_IF_NOT(soft_equiv(parse_number<float>(case1), 1.0f, feps));
   FAIL_IF_NOT(soft_equiv(parse_number<double>(case1), 1.0, deps));
 
@@ -112,7 +116,7 @@ void test_parse_number(UnitTest &ut) {
   try {
     parse_number<int>(case4);
     FAILMSG("Failed to capture invalid_argument given to stoi.");
-  } catch (std::invalid_argument &e) {
+  } catch (std::invalid_argument & /*error*/) {
     PASSMSG("invalid_argument givent to stox(str).");
   } catch (...) {
     FAILMSG("Failed to capture invalid_argument given to stoi.");
@@ -121,7 +125,7 @@ void test_parse_number(UnitTest &ut) {
   try {
     parse_number<int>(string("5000000000000"));
     FAILMSG("Failed to capture out_of_range given to stoi.");
-  } catch (std::out_of_range &e) {
+  } catch (std::out_of_range & /*error*/) {
     PASSMSG("invalid_argument givent to stox(str).");
   } catch (...) {
     FAILMSG("Failed to capture out_of_range given to stoi.");
@@ -135,7 +139,7 @@ void test_parse_number(UnitTest &ut) {
   return;
 }
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 void test_string_to_numvec(UnitTest &ut) {
 
   cout << "\nBegin test_string_to_numvec checks...\n";
@@ -197,7 +201,28 @@ void test_tostring(UnitTest &ut) {
   return;
 }
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
+void test_upper_lower(UnitTest &ut) {
+
+  cout << "\nBegin test_upper_lower checks...\n";
+  unsigned const nf = ut.numFails;
+
+  std::string const mixedCase("This StRiNg HAS mixed CAse.");
+  std::string const upperCase = rtt_dsxx::string_toupper(mixedCase);
+  std::string const lowerCase = rtt_dsxx::string_tolower(mixedCase);
+
+  FAIL_IF_NOT(upperCase == "THIS STRING HAS MIXED CASE.");
+  FAIL_IF_NOT(lowerCase == "this string has mixed case.");
+
+  if (ut.numFails == nf)
+    PASSMSG("test_upper_lower: All tests pass.");
+  else
+    FAILMSG("test_upper_lower: FAILED");
+
+  return;
+}
+
+//----------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
@@ -207,10 +232,11 @@ int main(int argc, char *argv[]) {
     test_parse_number(ut);
     test_string_to_numvec(ut);
     test_tostring(ut);
+    test_upper_lower(ut);
   }
   UT_EPILOG(ut);
 }
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 // end of tstDracoStrings.cc
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
