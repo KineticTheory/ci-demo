@@ -27,8 +27,8 @@ build_script:
   - 7z.exe -y x win32-vs16-tools.zip
   #- echo VENDOR_DIR = %VENDOR_DIR%
   #- echo VCPKGDIR = %VCPKGDIR%
-  #- xcopy %VENDOR_DIR%\ports\* %VCPKGDIR%\ports /E /Y /I
-  #- xcopy %VENDOR_DIR%\installed\* %VCPKGDIR%\installed /E /Y /I
+  - xcopy %VENDOR_DIR%\ports\* %VCPKGDIR%\ports /E /Y /I
+  - xcopy %VENDOR_DIR%\installed\* %VCPKGDIR%\installed /E /Y /I
   #- dir %VCPKGDIR%\installed
   #- dir %VCPKGDIR%\installed\vcpkg
   #- dir %VCPKGDIR%\installed\x64-windows
