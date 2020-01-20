@@ -13,7 +13,7 @@ environment:
   #CMAKE_PREFIX_PATH: c:\projects\vendors\gsl-2.5;c:\projects\vendors\lapack-3.8.0;c:\projects\vendors\metis-5.1.0
   VCPKGDIR: C:\Tools\vcpkg
   GENERATOR: "Visual Studio 16 2019"
-  CMAKE_OPTIONS: "-DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\vs2019-toolchain.cmake"
+  CMAKE_OPTIONS: "-DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake"
 
 # Notes: https://github.com/KineticTheory/Linux-HPC-Env/wiki/TPL-installs-via-vcpkg
 
