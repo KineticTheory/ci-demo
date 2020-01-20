@@ -45,10 +45,11 @@ message(" ")
 message( STATUS "Configuring Level 1 packages --" )
 add_dir_if_exists( ds++ )
 
-# # Level 2
-# message(" ")
-# message( STATUS "Configuring Level 2 packages --" )
-# add_dir_if_exists( c4 )           # needs ds++
+# Level 2
+message(" ")
+message( STATUS "Configuring Level 2 packages --" )
+add_dir_if_exists( experimental ) # tests need ds++
+add_dir_if_exists( c4 )           # needs ds++
 # add_dir_if_exists( cdi )          # needs ds++
 # add_dir_if_exists( compton )      # needs ds++
 # add_dir_if_exists( device )       # needs ds++
