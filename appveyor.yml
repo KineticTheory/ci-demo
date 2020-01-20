@@ -45,7 +45,7 @@ build_script:
   - mkdir build
   - cd build
 # no MPI installed so force scalar builds.
-  - cmake -G %GENERATOR% -A x64 %CMAKE_OPTIONS% %APPVEYOR_BUILD_FOLDER%
+  - cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% %APPVEYOR_BUILD_FOLDER%
   - cmake --build . --config Debug
   - ctest -C Debug -j 2 --output-on-failure
 
