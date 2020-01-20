@@ -17,22 +17,22 @@ environment:
 
 # Notes: https://github.com/KineticTheory/Linux-HPC-Env/wiki/TPL-installs-via-vcpkg
 
-build_script:
-# we start at $(APPVEYOR_BUILD_FOLDER) = c:\projects\draco-2th1a
-# can't put vendors in the source directory.
+install:
+  # we start at $(APPVEYOR_BUILD_FOLDER) = c:\projects\draco-2th1a
+  # Install MS-MPI
   - curl -L -o msmpisetup.exe https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe
   - msmpisetup.exe -unattend -verbose
-  - cd ..
+  # - This zip file provides:
+  #   . vcpkg port files for random123 and eospac.
+  #   . prebuilt vcpkg installs of gsl openblas metis, msmpi, parmetis, eospac,
+  #     and random123.
+  #   . numdiff is in the 'bin' directory,
+  #   . The vs2019-toolchain.cmake file used by this script.
+  - cd \projects
   - curl -L -o win32-vs16-tools.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vs16-tools.zip
   - 7z.exe -y x win32-vs16-tools.zip
-  #- echo VENDOR_DIR = %VENDOR_DIR%
-  #- echo VCPKGDIR = %VCPKGDIR%
   - xcopy %VENDOR_DIR%\ports\* %VCPKGDIR%\ports /E /Y /I
   - xcopy %VENDOR_DIR%\installed\* %VCPKGDIR%\installed /E /Y /I
-  #- dir %VCPKGDIR%\installed
-  #- dir %VCPKGDIR%\installed\vcpkg
-  #- dir %VCPKGDIR%\installed\x64-windows
-  #- dir %VCPKGDIR%\installed\x64-windows\lib
   # After the above xcopy, all of these should be 'already installed'
   - vcpkg --triplet x64-windows install gsl
   - vcpkg --triplet x64-windows install metis
@@ -42,6 +42,9 @@ build_script:
   - vcpkg --triplet x64-windows install random123
   - vcpkg --triplet x64-windows install eospac
   - vcpkg list
+
+build_script:
+  - cd \projects
   - mkdir build
   - cd build
 # no MPI installed so force scalar builds.
@@ -146,4 +149,4 @@ build_script:
 # windir=C:\Windows
 # WIX=C:\Program Files (x86)\WiX Toolset v3.11\
 # xunit20=C:\Tools\xUnit20
-# 
+#
