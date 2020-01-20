@@ -68,10 +68,12 @@ if( BUILD_TESTING )
       "-DDraco_TPL_INCLUDE_DIRS=${tmp}"
       "-DPython_EXECUTABLE=${Python_EXECUTABLE}"
       "-DRANDOM123_INCLUDE_DIR=${RANDOM123_INCLUDE_DIR}"
-      "-Ddraco_DIR=${draco_DIR}"     
+      "-Ddraco_DIR=${draco_DIR}" )
+    if( ${DRACO_C4} MATCHES "MPI" )
+      list( APPEND build_system_state
       "-DMPI_C_LIBRARIES=${MPI_C_LIBRARIES}"
-      "-DMPI_C_INCLUDE_DIRS=${MPI_C_INCLUDE_DIRS}"
-      )
+      "-DMPI_C_INCLUDE_DIRS=${MPI_C_INCLUDE_DIRS}" )
+    endif()
     if( WIN32 )
       # For Win32 builds, DLL and applications are built in the directory
       # specified by CMAKE_RUNTIME_OUTPUT_DIRECTORY.
@@ -99,7 +101,7 @@ if( BUILD_TESTING )
       DEPENDS      "Lib_FC_Derived_Type;Lib_c4;Lib_dsxx"
       NO_EXTERNAL_INSTALL
       CMAKE_COMMAND_LINE "${build_system_state}"
-      # VERBOSE
+      VERBOSE
       )
   endif()
 

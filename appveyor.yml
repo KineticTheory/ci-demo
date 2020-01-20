@@ -61,11 +61,10 @@ build_script:
   - mkdir build
   - cd build
 # no MPI installed so force scalar builds.
-  - echo NUMBER_OF_PROCESSORS = %NUMBER_OF_PROCESSORS%
   - echo cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% -DDRACO_C4=%C4_OPTS% %APPVEYOR_BUILD_FOLDER%
   - cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% -DDRACO_C4=%C4_OPTS% %APPVEYOR_BUILD_FOLDER%
-  - echo cmake --build . --config %BUILD_TYPE%
-  - cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
+  - echo cmake --build . --config %BUILD_TYPE% -- -v -j %NUMBER_OF_PROCESSORS%
+  - cmake --build . --config %BUILD_TYPE% -- -v -j %NUMBER_OF_PROCESSORS%
   - echo ctest -C %BUILD_TYPE% -j 2 --output-on-failure
   - ctest -C %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS% --output-on-failure
 
