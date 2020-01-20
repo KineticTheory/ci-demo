@@ -51,7 +51,7 @@ install:
   #- cinst dia
   #- cinst graphviz
   # Fix a few issues
-  - del /F "C:/Program Files/Git/usr/bin/sh.exe"
+  - if EXIST "C:\Program Files\Git\usr\bin\sh.exe" ( del /F "C:\Program Files\Git\usr\bin\sh.exe" )
 
 matrix:
   fast_finish: true
