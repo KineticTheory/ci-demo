@@ -46,7 +46,10 @@ install:
   # After the above xcopy, all of these should be 'already installed'
   #- vcpkg --triplet x64-windows install gsl metis openblas msmpi parmetis random123 eospac
   - vcpkg list
-  - cinst doxygen.install
+  # install via chocolatey
+  #- cinst doxygen.install
+  #- cinst dia
+  #- cinst graphviz
 
 matrix:
   fast_finish: true

@@ -71,10 +71,10 @@ add_dir_if_exists( c4 )           # needs ds++
 #   add_dir_if_exists( memory )         # needs dsxx
 # endif()
 
-# # Level 3
-# message(" ")
-# message( STATUS "Configuring Level 3 packages --" )
-# add_dir_if_exists( VendorChecks ) # needs c4
+# Level 3
+message(" ")
+message( STATUS "Configuring Level 3 packages --" )
+add_dir_if_exists( VendorChecks ) # needs c4
 # add_dir_if_exists( cdi_ipcress )
 # add_dir_if_exists( diagnostics )  # needs c4
 # add_dir_if_exists( fit )          # needs linear
@@ -85,9 +85,9 @@ add_dir_if_exists( c4 )           # needs ds++
 # add_dir_if_exists( parser )       # needs units, c4
 # add_dir_if_exists( roots )        # needs linear
 # add_dir_if_exists( timestep )     # needs c4, ds++
-# if( HAVE_Fortran )
-#   add_dir_if_exists( FortranChecks )
-# endif()
+if( HAVE_Fortran )
+  add_dir_if_exists( FortranChecks )
+endif()
 
 # # Level 4
 # message(" ")

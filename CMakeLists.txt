@@ -97,7 +97,9 @@ setupVendorLibraries()
 # Build Draco components:
 #
 add_subdirectory( src )
-add_subdirectory( autodoc ) # This must be processed after 'src'
+if( TARGET Exe_draco_info )
+  add_subdirectory( autodoc ) # This must be processed after 'src'
+endif()
 add_subdirectory( config )  # This must be processed after 'src'
 
 #
