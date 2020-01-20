@@ -23,7 +23,7 @@ build_script:
   - curl -L -o msmpisetup.exe https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe
   - msmpisetup.exe -unattend -verbose
   - cd ..
-  - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vs16-tools.zip
+  - curl -L -o win32-vs16-tools.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vs16-tools.zip
   - 7z.exe -y x win32-vs16-tools.zip
   - xcopy %VENDOR_DIR%\ports %VCPKGDIR%\ports /E
   - xcopy %VENDOR_DIR%\installed %VCPKGDIR%\installed /E
