@@ -29,6 +29,10 @@ build_script:
   - echo VCPKGPDIR = %VCPKGPDIR%
   - xcopy %VENDOR_DIR%\ports\* %VCPKGDIR%\ports /E /Y /I
   - xcopy %VENDOR_DIR%\installed\* %VCPKGDIR%\installed /E /Y /I
+  - dir %VCPKGDIR%\installed
+  - dir %VCPKGDIR%\installed\vcpkg
+  - dir %VCPKGDIR%\installed\x64-windows
+  - dir %VCPKGDIR%\installed\x64-windows\lib
   # After the above xcopy, all of these should be 'already installed'
   - vcpkg --triplet x64-windows install gsl
   - vcpkg --triplet x64-windows install metis
