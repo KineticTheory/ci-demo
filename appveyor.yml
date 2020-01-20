@@ -53,7 +53,7 @@ install:
   # Fix a few issues
   - if EXIST "C:\Program Files\Git\usr\bin\sh.exe" ( del /F "C:\Program Files\Git\usr\bin\sh.exe" )
   # Fix bugs in cmake-3.16.2
-  - xcopy %VENDOR_DIR%\cmake\* "C:\Program Files (x86)\CMake\share\cmake-3.16\Modules\Platform /E /Y /I /Q
+  - xcopy %VENDOR_DIR%\cmake\* "C:\Program Files (x86)\CMake\share\cmake-3.16\Modules\Platform" /E /Y /I /Q
 
 matrix:
   fast_finish: true
