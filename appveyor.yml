@@ -27,8 +27,8 @@ build_script:
   - 7z.exe -y x win32-vs16-tools.zip
   - echo VENDOR_DIR = %VENDOR_DIR%
   - echo VCPKGPDIR = %VCPKGPDIR%
-  - xcopy %VENDOR_DIR%\ports %VCPKGDIR%\ports /E
-  - xcopy %VENDOR_DIR%\installed %VCPKGDIR%\installed /E
+  - xcopy %VENDOR_DIR%\ports\* %VCPKGDIR%\ports /E /Y /I
+  - xcopy %VENDOR_DIR%\installed\* %VCPKGDIR%\installed /E /Y /I
   # After the above xcopy, all of these should be 'already installed'
   - vcpkg --triplet x64-windows install gsl
   - vcpkg --triplet x64-windows install metis
