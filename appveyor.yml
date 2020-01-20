@@ -7,32 +7,39 @@ clone_depth: 3
 
 environment:
   OMP_NUM_THREADS: 4
-  RANDOM123_INC_DIR: c:\projects\vendors\Random123-1.08\include
-  VENDOR_DIR: c:\projects\vendors
-  PATH: c:\projects\vendors\bin;$(PATH)
-  CMAKE_PREFIX_PATH: c:\projects\vendors\gsl-2.5;c:\projects\vendors\lapack-3.8.0;c:\projects\vendors\metis-5.1.0
-  VCPKGPDIR: C:\Tools\vcpkg\ports
+  # RANDOM123_INC_DIR: c:\projects\vendors\Random123-1.08\include
+  VENDOR_DIR: c:\projects\win32-vs16-tools
+  PATH: c:\projects\win32-vs16-tools\bin;$(PATH)
+  #CMAKE_PREFIX_PATH: c:\projects\vendors\gsl-2.5;c:\projects\vendors\lapack-3.8.0;c:\projects\vendors\metis-5.1.0
+  VCPKGPDIR: C:\Tools\vcpkg
+  GENERATOR: "Visual Studio 16 2019"
+  CMAKE_OPTIONS: "-DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\vs2019-toolchain.cmake"
 
 # Notes: https://github.com/KineticTheory/Linux-HPC-Env/wiki/TPL-installs-via-vcpkg
 
 build_script:
 # we start at $(APPVEYOR_BUILD_FOLDER) = c:\projects\draco-2th1a
 # can't put vendors in the source directory.
-  - cd ..
-#  - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vendors.zip
-#  - 7z.exe -y x win32-vendors.zip
-#  - set
   - curl -L -o msmpisetup.exe https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe
   - msmpisetup.exe -unattend -verbose
-# numdiff via msys? example: https://github.com/Microsoft/vcpkg/blob/master/ports/ffmpeg/portfile.cmake
-  - xcopy %APPVEYOR_BUILD_FOLDER%\tools\ports %VCPKGPDIR% /E
+  - cd ..
+  - curl -L -o win32-vendors.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vs16-tools.zip
+  - 7z.exe -y x win32-vs16-tools.zip
+  - xcopy %VENDOR_DIR%\ports %VCPKGDIR%\ports /E
+  - xcopy %VENDOR_DIR%\installed %VCPKGDIR%\installed /E
+  # After the above xcopy, all of these should be 'already installed'
   - vcpkg --triplet x64-windows install gsl
+  - vcpkg --triplet x64-windows install metis
+  - vcpkg --triplet x64-windows install openblas
   - vcpkg --triplet x64-windows install msmpi
+  - vcpkg --triplet x64-windows install parmetis
+  - vcpkg --triplet x64-windows install random123
+  - vcpkg --triplet x64-windows install eospac
   - vcpkg list
   - mkdir build
   - cd build
 # no MPI installed so force scalar builds.
-  - cmake -G "Visual Studio 16 2019" -A x64 -DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%APPVEYOR_BUILD_FOLDER%/tools/vs2019-toolchain.cmake %APPVEYOR_BUILD_FOLDER%
+  - cmake -G %GENERATOR% -A x64 %CMAKE_OPTIONS% %APPVEYOR_BUILD_FOLDER%
   - cmake --build . --config Debug
   - ctest -C Debug -j 2 --output-on-failure
 
