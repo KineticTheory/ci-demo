@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building src level Makefile.
-# note   Copyright (C) 2016-2018 Los Alamos National Security, LLC.
+# note   Copyright (C) 2016-2020 Triad National Security, LLC.
 #        All rights reserved.
 #------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.9.0)
@@ -17,6 +17,27 @@ if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
   if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0 )
     toggle_compiler_flag( TRUE "-Wfloat-equal -Wunused-macros" "CXX;C" "DEBUG")
   endif()
+  if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0 )
+    toggle_compiler_flag( TRUE "-fsanitize=bounds-strict -Wconversion -Wdouble-promotion -Wshadow -Wformat=2" "CXX" "DEBUG")
+  endif()
+#  if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.0)
+#
+# '-fsanitize=address' Not working just yet.  Issues...
+# 1. libasan.so.5: warning: the use of `tempnam' is dangerous, better use
+#    `mkstemp'
+# 2.==134051==ASan runtime does not come first in initial library list; you
+#   should either link runtime to your application or manually preload it with
+#   LD_PRELOAD.
+# 3. many more run time issues, some may require suppression.
+#
+#    toggle_compiler_flag( TRUE
+#      "-fsanitize=address -fsanitize=pointer-compare -fsanitize=pointer-subtract"
+#      "CXX" "DEBUG")
+#
+#  endif()
+elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
+  string( REPLACE "/W2" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" )
+  string( REPLACE "/W2" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
 endif()
 
 # Level 1
@@ -123,14 +144,18 @@ endif()
 if( CAFS_Fortran_COMPILER )
   message("CAFS Fortran: ${CAFS_Fortran_COMPILER}")
 endif()
-message(
-  "mpirun cmd  : ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} N ${MPIEXEC_POSTFLAGS}")
+if( "${DRACO_C4}" STREQUAL "MPI" )
+  message(
+  "mpirun cmd  : ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} N ${MPIEXEC_POSTFLAGS}")
+endif()
 message("Library Type: ${DRACO_LIBRARY_TYPE}
 ")
+
 if( CRAY_PE AND ENV{CRAYPE_VERSION} )
-  message("Cray system detected: CC -craype-verbose -V:
+  message("Cray system detected: CC -craype-verbose -V|--version:
 ")
-  if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel" )
+  if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel" OR
+      ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
     set( ver_opt "--version")
   else( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Cray" )
     set( ver_opt "-V")
