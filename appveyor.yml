@@ -46,10 +46,12 @@ install:
   # After the above xcopy, all of these should be 'already installed'
   #- vcpkg --triplet x64-windows install gsl metis openblas msmpi parmetis random123 eospac
   - vcpkg list
-  # install via chocolatey
+  # Install some packages via chocolatey
   #- cinst doxygen.install
   #- cinst dia
   #- cinst graphviz
+  # Fix a few issues
+  - del /F "C:/Program Files/Git/usr/bin/sh.exe"
 
 matrix:
   fast_finish: true
