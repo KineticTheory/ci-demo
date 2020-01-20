@@ -15,6 +15,13 @@ environment:
   GENERATOR: "Visual Studio 16 2019"
   CMAKE_OPTIONS: "-DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake"
 
+  matrix:
+    - BUILD_TYPE: Debug
+      FOO: actual
+
+    - BUILD_TYPE: Release
+      FOO: artificial
+
 # Notes: https://github.com/KineticTheory/Linux-HPC-Env/wiki/TPL-installs-via-vcpkg
 
 install:
@@ -43,14 +50,17 @@ install:
   - vcpkg --triplet x64-windows install eospac
   - vcpkg list
 
+matrix:
+  fast_finish: true
+
 build_script:
   - cd \projects
   - mkdir build
   - cd build
 # no MPI installed so force scalar builds.
   - cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% %APPVEYOR_BUILD_FOLDER%
-  - cmake --build . --config Debug
-  - ctest -C Debug -j 2 --output-on-failure
+  - cmake --build . --config %BUILD_TYPE%
+  - ctest -C %BUILD_TYPE% -j 2 --output-on-failure
 
 #build:
 #  verbosity: minimal
