@@ -7,14 +7,13 @@ clone_depth: 3
 
 environment:
   OMP_NUM_THREADS: 4
-  # RANDOM123_INC_DIR: c:\projects\vendors\Random123-1.08\include
   VENDOR_DIR: c:\projects\win32-vs16-tools
-  PATH: c:\projects\win32-vs16-tools\bin;$(PATH);c:\Qt\5.14.0\bin
-  #CMAKE_PREFIX_PATH: c:\projects\vendors\gsl-2.5;c:\projects\vendors\lapack-3.8.0;c:\projects\vendors\metis-5.1.0
+  PATH: c:\projects\win32-vs16-tools\bin;$(PATH)
   VCPKGDIR: C:\Tools\vcpkg
   GENERATOR: "Visual Studio 16 2019"
   CMAKE_OPTIONS: "-DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake"
-  QTDIR: c:\Qt\5.14.0
+  #QTDIR: c:\Qt\5.14.0
+  #PATH+=c:\Qt\5.14.0\bin
 
   matrix:
     - BUILD_TYPE: Debug
@@ -53,8 +52,6 @@ install:
   - vcpkg --triplet x64-windows install random123
   - vcpkg --triplet x64-windows install eospac
   - vcpkg list
-  - echo QTDIR = %QTDI$%
-  - dir %QTDIR%\bin
 
 matrix:
   fast_finish: true
