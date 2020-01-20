@@ -13,14 +13,17 @@ environment:
   #CMAKE_PREFIX_PATH: c:\projects\vendors\gsl-2.5;c:\projects\vendors\lapack-3.8.0;c:\projects\vendors\metis-5.1.0
   VCPKGDIR: C:\Tools\vcpkg
   GENERATOR: "Visual Studio 16 2019"
-  CMAKE_OPTIONS: "-DDRACO_C4=SCALAR -DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake"
+  CMAKE_OPTIONS: "-DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake"
 
   matrix:
     - BUILD_TYPE: Debug
-      FOO: actual
+      C4_OPTS: -DDRACO_C4=SCALAR
+
+    - BUILD_TYPE: Debug
+      C4_OPTS: -DDRACO_C4=MPI
 
     - BUILD_TYPE: Release
-      FOO: artificial
+      C4_OPTS: -DDRACO_C4=MPI
 
 # Notes: https://github.com/KineticTheory/Linux-HPC-Env/wiki/TPL-installs-via-vcpkg
 
@@ -58,8 +61,11 @@ build_script:
   - mkdir build
   - cd build
 # no MPI installed so force scalar builds.
-  - cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% %APPVEYOR_BUILD_FOLDER%
+  - echo cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% %C4_OPTS% %APPVEYOR_BUILD_FOLDER%
+  - cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% %C4_OPTS% %APPVEYOR_BUILD_FOLDER%
+  - echo cmake --build . --config %BUILD_TYPE%
   - cmake --build . --config %BUILD_TYPE%
+  - echo ctest -C %BUILD_TYPE% -j 2 --output-on-failure
   - ctest -C %BUILD_TYPE% -j 2 --output-on-failure
 
 #build:
