@@ -47,10 +47,8 @@ if(NOT TARGET Lib_dsxx)
     ABSOLUTE )
   cafs_create_imported_targets( Lib_dsxx "rtt_ds++"
     "${draco_BINARY_DIR}/src/ds++" CXX )
-  if ( "${DRACO_C4}" STREQUAL "MPI")  
-    cafs_create_imported_targets( Lib_c4 "rtt_c4"
-      "${draco_BINARY_DIR}/src/c4" CXX )
-  endif()
+  cafs_create_imported_targets( Lib_c4 "rtt_c4"
+    "${draco_BINARY_DIR}/src/c4" CXX )
   cafs_create_imported_targets( Lib_FC_Derived_Type "rtt_FC_Derived_Type"
     "${draco_BINARY_DIR}/src/FortranChecks" CXX )
 

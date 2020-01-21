@@ -11,7 +11,8 @@ environment:
   PATH: c:\projects\win32-vs16-tools\bin;$(PATH)
   VCPKGDIR: C:\Tools\vcpkg
   GENERATOR: "Visual Studio 16 2019"
-  CMAKE_OPTIONS: "-DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake -DCMAKE_VERBOSE_MAKEFILE=ON"
+  CMAKE_OPTIONS: "-DCMAKE_TOOLCHAIN_FILE=%VENDOR_DIR%\\vs2019-toolchain.cmake" 
+  #-DCMAKE_VERBOSE_MAKEFILE=ON"
   #QTDIR: c:\Qt\5.14.0
   #PATH+=c:\Qt\5.14.0\bin
 

@@ -15,7 +15,7 @@ project( FortranChecks CXX )
 # name demangling unnecessary.
 
 # ---------------------------------------------------------------------------- #
-# Source files 
+# Source files
 # ---------------------------------------------------------------------------- #
 file( GLOB Csources *.cc )
 
@@ -75,15 +75,15 @@ if( BUILD_TESTING )
       "-DMPI_C_INCLUDE_DIRS=${MPI_C_INCLUDE_DIRS}" )
       set( deps Lib_FC_Derived_Type;Lib_c4;Lib_dsxx )
     else()
-      set( deps Lib_FC_Derived_Type;Lib_dsxx )    
+      set( deps Lib_FC_Derived_Type;Lib_dsxx )
     endif()
     if( WIN32 )
       # For Win32 builds, DLL and applications are built in the directory
       # specified by CMAKE_RUNTIME_OUTPUT_DIRECTORY.
-      list( APPEND build_system_state 
+      list( APPEND build_system_state
         "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${Draco_BINARY_DIR}/\${CMAKE_BUILD_TYPE}" )
       if(CMAKE_TOOLCHAIN_FILE)
-        list( APPEND build_system_state 
+        list( APPEND build_system_state
           "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
       endif()
     else()
