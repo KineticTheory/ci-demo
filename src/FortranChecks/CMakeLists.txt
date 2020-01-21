@@ -104,7 +104,7 @@ if( BUILD_TESTING )
       DEPENDS      ${deps}
       NO_EXTERNAL_INSTALL
       CMAKE_COMMAND_LINE "${build_system_state}"
-      VERBOSE
+      #VERBOSE
       )
   endif()
 

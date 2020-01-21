@@ -8,6 +8,8 @@ clone_depth: 3
 environment:
   OMP_NUM_THREADS: 4
   VENDOR_DIR: c:\projects\win32-vs16-tools
+  # Add numdiff, ndselect to PATH
+  # Add gfortran's runtime dll's to PATH
   PATH: c:\projects\win32-vs16-tools\bin;$(PATH);c:\msys64\mingw64\bin
   VCPKGDIR: C:\Tools\vcpkg
   GENERATOR: "Visual Studio 16 2019"
@@ -68,9 +70,8 @@ build_script:
   - cmake -G "%GENERATOR%" -A x64 %CMAKE_OPTIONS% -DDRACO_C4=%C4_OPTS% %APPVEYOR_BUILD_FOLDER%
   - echo cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
   - cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
-  - where libquadmath*.dll
-  - echo ctest -R Fortran -C %BUILD_TYPE% -j 2 --output-on-failure
-  - ctest -R Fortran -C %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS% --output-on-failure
+  - echo ctest -C %BUILD_TYPE% -j 2 --output-on-failure
+  - ctest -C %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS% --output-on-failure
 
 #build:
 #  verbosity: minimal
