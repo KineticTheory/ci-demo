@@ -69,9 +69,11 @@ build_script:
   - echo cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
   - cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
   - dir c:\projects\build\Debug
-  - where libquadmath*.dll
-  - echo ctest -C %BUILD_TYPE% -j 2 --output-on-failure
-  - ctest -C %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS% --output-on-failure
+  - dir C:\msys64\mingw64\bin\libquadmath*.dll
+  - copy C:\msys64\mingw64\bin\libquadmath*.dll c:\projects\build\Debug
+  #- where libquadmath*.dll
+  - echo ctest -R Fortran -C %BUILD_TYPE% -j 2 --output-on-failure
+  - ctest -R Fortran -C %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS% --output-on-failure
 
 #build:
 #  verbosity: minimal
